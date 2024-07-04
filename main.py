@@ -67,6 +67,12 @@ def on_mqtt_connect(mqtt_client, userdata, flags, reason_code, properties):
     # subscribe to topic for changing the temperature for a heating group
     mqtt_client.subscribe("cmd/homematicip/groups/heating/+/set")
 
+    # subscribe to topic for changing the mode for a heating group
+    mqtt_client.subscribe("cmd/homematicip/groups/heating/+/mode")
+
+   # subscribe to topic for changing the boost mode for a heating group
+    mqtt_client.subscribe("cmd/homematicip/groups/heating/+/boost")
+
     # subscribe to topic for opening hoermann gate
     mqtt_client.subscribe("cmd/homematicip/devices/hoermann_drive/+/state")
 
@@ -99,25 +105,33 @@ def on_mqtt_message(mqtt_client, userdata, msg):
     device_or_group = topic_as_array[2]
     type = topic_as_array[3]
     id = topic_as_array[4]
+    parameter = topic_as_array[5]
 
     if device_or_group == "groups":
-        update_homematic_group(id, value)
+        update_homematic_group(id, parameter, value)
     elif device_or_group == "devices":
-        update_homematic_device(id, value)
+        update_homematic_group(id, parameter, value)
     elif device_or_group == "home":
-        update_homematic_home(type, value)
+        update_homematic_group(id, parameter, value)
     else:
         logger.warning("Updating " + device_or_group + " not yet implemented")
 
 
-def update_homematic_group(group_id, value):
+def update_homematic_group(group_id, parameter, value):
     try:
         group = home.search_group_by_id(group_id)
         group_type = type(group)
         error_code = ''
         if group_type == HeatingGroup:
-            result = group.set_point_temperature(value)
-            error_code = result["errorCode"]
+            if parameter == 'set':
+                result = group.set_point_temperature(value)
+                error_code = result["errorCode"]
+            elif parameter == 'mode':
+                result = group.set_control_mode(value)
+                error_code = result["errorCode"]
+            elif parameter == 'boost':
+                result = group.set_boost(value)
+                error_code = result["errorCode"]
         else:
             logger.error("No updates allowed on groups of type " + str(group_type))
 
@@ -213,7 +227,8 @@ def update_homematic_object(payload):
             "humidity": payload.humidity,
             "valve": payload.valvePosition,
             "window": payload.windowState,
-            "mode": payload.controlMode
+            "mode": payload.controlMode,
+            "boost": payload.boostMode
         }
     elif payload_type in (HeatingThermostat, HeatingThermostatCompact):
         topic += "devices/thermostat/" + payload.id
