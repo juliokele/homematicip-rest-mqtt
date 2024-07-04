@@ -233,20 +233,27 @@ def update_homematic_object(payload):
     elif payload_type in (HeatingThermostat, HeatingThermostatCompact):
         topic += "devices/thermostat/" + payload.id
         data = {
+            "model": payload.modelType,
+            "label": payload.label,            
             "low_battery": payload.lowBat,
             "set": payload.setPointTemperature,
             "temperature": payload.valveActualTemperature,
-            "valve": payload.valvePosition
+            "valve": payload.valvePosition,
+            "offset": payload.temperatureOffset
         }
     elif payload_type in (ShutterContact, ShutterContactMagnetic, ContactInterface, RotaryHandleSensor):
         topic += "devices/window/" + payload.id
         data = {
+            "model": payload.modelType,        
+            "label": payload.label,    
             "low_battery": payload.lowBat,
             "state": payload.windowState
         }
     elif payload_type == WallMountedThermostatPro:
         topic += "devices/wall_thermostat/" + payload.id
         data = {
+            "model": payload.modelType,
+            "label": payload.label,               
             "low_battery": payload.lowBat,
             "set": payload.setPointTemperature,
             "temperature": payload.actualTemperature,
