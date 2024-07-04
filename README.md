@@ -39,7 +39,8 @@ Current temperature | `homematicip/groups/heating/<group_id>/temperature`
 Current humidity | `homematicip/groups/heating/<group_id>/humidity`
 Current valve position (0..1) | `homematicip/groups/heating/<group_id>/valve`
 Current window state (`OPEN`,`CLOSED`,`TILTED`) | `homematicip/groups/heating/<group_id>/window`
-Current control mode (`AUTOMATIC`, `MANUAL`, `ECO`) | `homematicip/groups/heating/<group_id>/mode`
+Current control mode (`AUTOMATIC`, `MANUAL`, `ECO`) | `homematicip/groups/heating/<group_id>/mode` | `cmd/homematicip/groups/heating/<group_id>/mode`
+Current boost state (`False`,`True`) | `homematicip/groups/heating/<group_id>/boost` | `cmd/homematicip/groups/heating/<group_id>/boost`
 
 ## Heating thermostat (valve)
 
