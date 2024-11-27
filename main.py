@@ -239,6 +239,8 @@ def update_homematic_object(payload):
             "set": payload.setPointTemperature,
             "temperature": payload.valveActualTemperature,
             "valve": payload.valvePosition,
+            "valve_state": payload.valveState,
+            "automatic_valve_adaption_needed": payload.automaticValveAdaptionNeeded,
             "offset": payload.temperatureOffset
         }
     elif payload_type in (ShutterContact, ShutterContactMagnetic, ContactInterface, RotaryHandleSensor):
@@ -247,7 +249,8 @@ def update_homematic_object(payload):
             "model": payload.modelType,        
             "label": payload.label,    
             "low_battery": payload.lowBat,
-            "state": payload.windowState
+            "state": payload.windowState,
+            "event_delay": payload.eventDelay
         }
     elif payload_type == WallMountedThermostatPro:
         topic += "devices/wall_thermostat/" + payload.id
@@ -260,15 +263,15 @@ def update_homematic_object(payload):
             "humidity": payload.humidity
         }
     elif payload_type == TemperatureHumiditySensorWithoutDisplay:
-        topic += "devices/wall_thermostat/" + payload.id
+        topic += "devices/temperature_humidity_sensor/" + payload.id
         data = {
             "model": payload.modelType,
             "label": payload.label,               
             "low_battery": payload.lowBat,
-            "temperatureOffset": payload.temperatureOffset,            
+            "temperature_offset": payload.temperatureOffset,            
             "temperature": payload.actualTemperature,
             "humidity": payload.humidity,
-            "vaporAmount": payload.vaporAmount
+            "vapor_amount": payload.vaporAmount
         }        
     elif payload_type == WeatherSensor:
         topic += "devices/weather/" + payload.id
