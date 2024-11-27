@@ -8,7 +8,7 @@ import paho.mqtt.client as mqtt
 import homematicip
 from homematicip.home import Home
 from homematicip.device import HeatingThermostat, HeatingThermostatCompact, ShutterContact, ShutterContactMagnetic, \
-    ContactInterface, RotaryHandleSensor, WallMountedThermostatPro, WeatherSensor, HoermannDrivesModule, \
+    ContactInterface, RotaryHandleSensor, WallMountedThermostatPro, TemperatureHumiditySensorWithoutDisplay, WeatherSensor, HoermannDrivesModule, \
     MotionDetectorIndoor, SmokeDetector, AlarmSirenIndoor, LightSensor
 from homematicip.group import HeatingGroup
 from homematicip.base.enums import DoorCommand
@@ -259,6 +259,17 @@ def update_homematic_object(payload):
             "temperature": payload.actualTemperature,
             "humidity": payload.humidity
         }
+    elif payload_type == TemperatureHumiditySensorWithoutDisplay:
+        topic += "devices/wall_thermostat/" + payload.id
+        data = {
+            "model": payload.modelType,
+            "label": payload.label,               
+            "low_battery": payload.lowBat,
+            "temperatureOffset": payload.temperatureOffset,            
+            "temperature": payload.actualTemperature,
+            "humidity": payload.humidity,
+            "vaporAmount": payload.vaporAmount
+        }        
     elif payload_type == WeatherSensor:
         topic += "devices/weather/" + payload.id
         data = {
